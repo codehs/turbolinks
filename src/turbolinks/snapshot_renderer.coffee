@@ -43,11 +43,12 @@ class Turbolinks.SnapshotRenderer extends Turbolinks.Renderer
 
     for element in @getNewHeadScriptElements()
       script = @createScriptElement(element)
-      promise = new Promise((resolve) ->
-        script.onload = () -> resolve()
-        script.onerror = () -> resolve()
-      )
-      promises.push(promise)
+      if element.src
+        promise = new Promise((resolve) ->
+          script.onload = () -> resolve()
+          script.onerror = () -> resolve()
+        )
+        promises.push(promise)
       document.head.appendChild(script)
 
     Promise.all(promises).then(() -> Turbolinks.dispatch('scripts:load'))
